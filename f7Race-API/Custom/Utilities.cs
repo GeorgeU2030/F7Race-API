@@ -14,8 +14,7 @@ namespace f7Race_API.Custom
         public Utilities(string jwtSecret)
         {
             DotEnv.Load();
-            jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? string.Empty;
-            jwtsecret = jwtSecret;
+            jwtsecret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? string.Empty;
         }
 
         public string CrpytSHA256(string text){

@@ -48,7 +48,10 @@ var connectionString = postgresSQL;
 builder.Services.AddDbContext<F7Db>(options =>
     options.UseNpgsql(connectionString));
 
-builder.Services.AddSingleton<Utilities>();
+builder.Services.AddSingleton<Utilities>(ServiceProvider => {
+    var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? string.Empty;
+    return new Utilities(jwtSecret);
+});
 
 builder.Services.AddAuthentication(config => {
     config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
