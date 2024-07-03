@@ -54,5 +54,33 @@ namespace f7Race_API.Custom
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        public bool ValidateJWTToken(string token){
+            
+            var claimsPrincipal = new ClaimsPrincipal();
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtsecret))
+            };
+
+            try {
+                claimsPrincipal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+                return true;
+            }catch(SecurityTokenExpiredException){
+                return false;
+            }catch(SecurityTokenInvalidSignatureException){
+                return false;
+            }catch(Exception ex){
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
     }
 }

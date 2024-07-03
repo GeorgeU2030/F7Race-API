@@ -51,6 +51,12 @@ namespace f7Race_API.Controllers {
             return Ok(new {token});
         }
 
+        [HttpGet("validate")]
+        public IActionResult ValidateToken([FromQuery]string token){
+            var isValid = _utilities.ValidateJWTToken(token);
+            return Ok(new {isValid});
+        }
+
     }
     
 }
