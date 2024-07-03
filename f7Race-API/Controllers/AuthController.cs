@@ -22,6 +22,11 @@ namespace f7Race_API.Controllers {
 
         [HttpPost("signup")]
         public async Task<IActionResult> Register(SignUpDTO user){
+            
+            var userexists = await _context.Users.AnyAsync(x => x.Email == user.Email);
+            
+            if(userexists) return StatusCode(StatusCodes.Status409Conflict);
+
             var modelUser = new User {
                 Name = user.Name,
                 Email = user.Email,
