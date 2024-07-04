@@ -10,6 +10,7 @@ namespace f7Race_API.Data {
         public DbSet<Season> Seasons { get; set; }
         public DbSet<SeasonBrand> SeasonBrands { get; set; }
         public DbSet<SeasonRace> SeasonRaces { get; set; }
+        public DbSet<Trophy> Trophies { get; set; }
         public DbSet<User> Users { get; set; }
         
     }

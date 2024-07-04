@@ -10,8 +10,8 @@ namespace f7Race_API.Models {
         public Brand? Third { get; set; }
 
         // Relation with Race and Brands
-        public ICollection<Race> Races { get; set; } = [];
-        public ICollection<Brand> Brands { get; set; } = [];
+        public ICollection<SeasonRace> Races { get; set; } = [];
+        public ICollection<SeasonBrand> Brands { get; set; } = [];
 
         // Relation with User
         public int UserId { get; set; }

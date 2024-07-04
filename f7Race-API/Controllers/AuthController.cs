@@ -47,8 +47,10 @@ namespace f7Race_API.Controllers {
             if(modelUser.Password != _utilities.CrpytSHA256(user.Password)) return StatusCode(StatusCodes.Status401Unauthorized);
             
             var token = _utilities.GenerateJWTToken(modelUser);
+
+            var userId = modelUser.UserId;
             
-            return Ok(new {token});
+            return Ok(new {token, userId});
         }
 
         [HttpGet("validate")]

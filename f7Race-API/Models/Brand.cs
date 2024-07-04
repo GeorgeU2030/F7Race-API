@@ -5,11 +5,15 @@ namespace f7Race_API.Models {
         public required string Logo { get; set; }
         public required string Country { get; set; }
         public required string Flag { get; set; }
-        public int TotalWins { get; set; }
-        public int TotalPodiums { get; set; }
-        public int TotalPoints { get; set; }
+        public int TotalWins { get; set; } = 0;
+        public int TotalPodiums { get; set; } = 0;
+        public int TotalPoints { get; set; } = 0;
+        public int TotalChampions { get; set; } = 0;
 
         // Relation with the User
         public int UserId { get; set; }
+
+        // Relation with Trophies
+        public ICollection<Trophy> Trophies { get; set; } = [];
     }
 }

@@ -1,3 +1,4 @@
+using f7Race_API.Custom;
 using f7Race_API.Data;
 using f7Race_API.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -23,8 +24,14 @@ namespace f7Race_API.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddBrand(Brand brand){
-            await _context.Brands.AddAsync(brand);
+        [AllowAnonymous]
+        public async Task<IActionResult> AddBrand(int UserId){
+            
+            foreach (var brand in BrandData.Brands){
+                brand.UserId = UserId;
+                _context.Brands.Add(brand);
+            }
+
             await _context.SaveChangesAsync();
             return StatusCode(StatusCodes.Status201Created);
         }

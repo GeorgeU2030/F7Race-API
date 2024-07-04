@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using f7Race_API.Data;
@@ -11,9 +12,11 @@ using f7Race_API.Data;
 namespace f7Race_API.Migrations
 {
     [DbContext(typeof(F7Db))]
-    partial class F7DbModelSnapshot : ModelSnapshot
+    [Migration("20240704171902_thirdMigration")]
+    partial class thirdMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,6 +49,9 @@ namespace f7Race_API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("SeasonId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("TotalChampions")
                         .HasColumnType("integer");
 
@@ -62,6 +68,8 @@ namespace f7Race_API.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("BrandId");
+
+                    b.HasIndex("SeasonId");
 
                     b.ToTable("Brands");
                 });
@@ -87,10 +95,15 @@ namespace f7Race_API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("SeasonId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("RaceId");
+
+                    b.HasIndex("SeasonId");
 
                     b.ToTable("Races");
                 });
@@ -161,8 +174,6 @@ namespace f7Race_API.Migrations
 
                     b.HasKey("SeasonBrandId");
 
-                    b.HasIndex("SeasonId");
-
                     b.ToTable("SeasonBrands");
                 });
 
@@ -221,8 +232,6 @@ namespace f7Race_API.Migrations
 
                     b.HasKey("SeasonRaceId");
 
-                    b.HasIndex("SeasonId");
-
                     b.ToTable("SeasonRaces");
                 });
 
@@ -246,7 +255,7 @@ namespace f7Race_API.Migrations
 
                     b.HasIndex("RaceId");
 
-                    b.ToTable("Trophies");
+                    b.ToTable("Trophy");
                 });
 
             modelBuilder.Entity("f7Race_API.Models.User", b =>
@@ -278,6 +287,20 @@ namespace f7Race_API.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("f7Race_API.Models.Brand", b =>
+                {
+                    b.HasOne("f7Race_API.Models.Season", null)
+                        .WithMany("Brands")
+                        .HasForeignKey("SeasonId");
+                });
+
+            modelBuilder.Entity("f7Race_API.Models.Race", b =>
+                {
+                    b.HasOne("f7Race_API.Models.Season", null)
+                        .WithMany("Races")
+                        .HasForeignKey("SeasonId");
+                });
+
             modelBuilder.Entity("f7Race_API.Models.Season", b =>
                 {
                     b.HasOne("f7Race_API.Models.Brand", "Second")
@@ -297,24 +320,6 @@ namespace f7Race_API.Migrations
                     b.Navigation("Third");
 
                     b.Navigation("Winner");
-                });
-
-            modelBuilder.Entity("f7Race_API.Models.SeasonBrand", b =>
-                {
-                    b.HasOne("f7Race_API.Models.Season", null)
-                        .WithMany("Brands")
-                        .HasForeignKey("SeasonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("f7Race_API.Models.SeasonRace", b =>
-                {
-                    b.HasOne("f7Race_API.Models.Season", null)
-                        .WithMany("Races")
-                        .HasForeignKey("SeasonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("f7Race_API.Models.Trophy", b =>

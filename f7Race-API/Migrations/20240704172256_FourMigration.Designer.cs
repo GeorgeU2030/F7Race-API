@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using f7Race_API.Data;
@@ -11,9 +12,11 @@ using f7Race_API.Data;
 namespace f7Race_API.Migrations
 {
     [DbContext(typeof(F7Db))]
-    partial class F7DbModelSnapshot : ModelSnapshot
+    [Migration("20240704172256_FourMigration")]
+    partial class FourMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -246,7 +249,7 @@ namespace f7Race_API.Migrations
 
                     b.HasIndex("RaceId");
 
-                    b.ToTable("Trophies");
+                    b.ToTable("Trophy");
                 });
 
             modelBuilder.Entity("f7Race_API.Models.User", b =>
