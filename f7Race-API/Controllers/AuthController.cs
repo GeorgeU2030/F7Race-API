@@ -35,7 +35,8 @@ namespace f7Race_API.Controllers {
             };
             await _context.Users.AddAsync(modelUser);
             await _context.SaveChangesAsync();
-            return StatusCode(StatusCodes.Status201Created);
+            
+            return StatusCode(StatusCodes.Status201Created, new {modelUser.UserId});
         }
 
         [HttpPost("login")]
