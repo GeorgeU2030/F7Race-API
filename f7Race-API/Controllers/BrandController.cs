@@ -17,9 +17,11 @@ namespace f7Race_API.Controllers {
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetBrands(){
-            var brands = await _context.Brands.ToListAsync();
+        [HttpGet("{UserId}")]
+        public async Task<IActionResult> GetBrands(int UserId){
+            var brands = await _context.Brands
+                .Where(x => x.UserId == UserId)
+                .ToListAsync();
             return Ok(brands);
         }
 
