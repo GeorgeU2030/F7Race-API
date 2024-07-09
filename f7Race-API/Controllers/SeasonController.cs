@@ -26,12 +26,29 @@ namespace f7Race_API.Controller {
                 .Include(x => x.Winner)
                 .Include(x => x.Second)
                 .Include(x => x.Third)
-                .Include(x => x.Brands)
-                .Include(x => x.Races)
                 .OrderByDescending(x => x.SeasonId)
                 .ToListAsync();
 
             return Ok(seasons);
+        }
+
+        [HttpGet("{id}/detail")]
+        public async Task<ActionResult<Season>> GetSeasonDetail(int id){
+            
+            var season = await _context.Seasons
+                .Where(x => x.SeasonId == id)
+                .Include(x => x.Brands)
+                .Include(x => x.Races)
+                .Include(x => x.Winner)
+                .Include(x => x.Second)
+                .Include(x => x.Third)
+                .FirstOrDefaultAsync();
+
+            if (season == null){
+                return NotFound();
+            }
+
+            return season;
         }
 
         [HttpPost]
