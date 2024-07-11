@@ -48,6 +48,8 @@ namespace f7Race_API.Controller {
                 return NotFound();
             }
 
+            season.Races = [.. season.Races.OrderBy(r => r.SeasonRaceId)];
+
             return season;
         }
 
@@ -83,6 +85,35 @@ namespace f7Race_API.Controller {
             }
 
             season.Races.Add(seasonrace);
+
+            await _context.SaveChangesAsync();
+            return StatusCode(StatusCodes.Status201Created);
+        }
+
+
+        [HttpPut("{id}/podium")]
+        public async Task<IActionResult> AddWinnertoSeason(int id, int winner, int second, int third){
+            
+            var season = await _context.Seasons.FindAsync(id);
+
+            if (season == null){
+                return NotFound();
+            }
+
+            var winnerTeam = await _context.Brands.FindAsync(winner);
+
+            season.WinnerId = winner;
+            season.Winner = winnerTeam;
+
+            var secondTeam = await _context.Brands.FindAsync(second);
+
+            season.SecondId = second;
+            season.Second = secondTeam;
+
+            var thirdTeam = await _context.Brands.FindAsync(third);
+
+            season.ThirdId = third;
+            season.Third = thirdTeam;
 
             await _context.SaveChangesAsync();
             return StatusCode(StatusCodes.Status201Created);

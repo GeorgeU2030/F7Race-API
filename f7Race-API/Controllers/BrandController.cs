@@ -25,6 +25,21 @@ namespace f7Race_API.Controllers {
             return Ok(brands);
         }
 
+        [HttpGet("{UserId}/detail")]
+        public async Task<ActionResult<Brand>> GetBrandDetail(int UserId, int brandId){
+            var brand = await _context.Brands
+                .Where(x => x.BrandId == brandId)
+                .Where(x => x.UserId == UserId)
+                .Include(x => x.Trophies)
+                .FirstOrDefaultAsync();
+
+            if(brand == null){
+                return NotFound();
+            }
+
+            return brand;
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> AddBrand(int UserId){
@@ -36,6 +51,97 @@ namespace f7Race_API.Controllers {
 
             await _context.SaveChangesAsync();
             return StatusCode(StatusCodes.Status201Created);
+        }
+
+        [HttpPut("stats")]
+        public async Task<IActionResult> Stats(int UserId, string seasonBrandName, bool isWinner){
+            
+            var brand = await _context.Brands
+                .Where(x => x.Name == seasonBrandName)
+                .Where(x => x.UserId == UserId)
+                .FirstOrDefaultAsync();
+            
+            if(brand == null){
+                return NotFound();
+            }
+
+            if(isWinner){
+                brand.TotalWins += 1;
+            }
+
+            brand.TotalPodiums += 1;
+
+            await _context.SaveChangesAsync();
+            return Ok(brand);
+        }
+
+        [HttpPut("points")]
+        public async Task<IActionResult> Points(int UserId, string seasonBrandName, int points){
+            
+            var brand = await _context.Brands
+                .Where(x => x.Name == seasonBrandName)
+                .Where(x => x.UserId == UserId)
+                .FirstOrDefaultAsync();
+            
+            if(brand == null){
+                return NotFound();
+            }
+
+            brand.TotalPoints += points;
+
+            await _context.SaveChangesAsync();
+            return Ok(brand);
+        }
+
+
+        [HttpPut("trophies")]
+        public async Task<IActionResult> Trophies(int UserId, string seasonBrandName, string raceName){
+            
+            var brand = await _context.Brands
+                .Where(x => x.Name == seasonBrandName)
+                .Where(x => x.UserId == UserId)
+                .FirstOrDefaultAsync();
+            
+            if(brand == null){
+                return NotFound();
+            }
+
+            var race = await _context.Races
+                .Where(x => x.Name == raceName)
+                .Where(x => x.UserId == UserId)
+                .FirstOrDefaultAsync();
+
+            if(race == null){
+                return NotFound();
+            }
+
+            var trophy = new Trophy {
+                BrandId = brand.BrandId,
+                Brand = brand,
+                RaceId = race.RaceId,
+                Race = race
+            };
+
+            _context.Trophies.Add(trophy);
+            await _context.SaveChangesAsync();
+
+            return Ok(brand);
+        }
+
+        [HttpPut("champion")]
+        public async Task<IActionResult> Champion(string seasonBrandName){
+            var brand = await _context.Brands
+                .Where(x => x.Name == seasonBrandName)
+                .FirstOrDefaultAsync();
+            
+            if(brand == null){
+                return NotFound();
+            }
+
+            brand.TotalChampions += 1;
+
+            await _context.SaveChangesAsync();
+            return Ok(brand);
         }
     }
 }
