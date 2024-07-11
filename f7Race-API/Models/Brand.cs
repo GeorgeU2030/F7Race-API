@@ -1,3 +1,6 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using f7Race_API.Models.DTOS;
+
 namespace f7Race_API.Models {
     public class Brand {
         public int BrandId { get; set; }
@@ -15,5 +18,8 @@ namespace f7Race_API.Models {
 
         // Relation with Trophies
         public ICollection<Trophy> Trophies { get; set; } = [];
+
+        [NotMapped]
+        public ICollection<TrophyCountDto> TrophiesCount { get; set; } = [];
     }
 }

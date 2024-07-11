@@ -1,6 +1,7 @@
 using f7Race_API.Custom;
 using f7Race_API.Data;
 using f7Race_API.Models;
+using f7Race_API.Models.DTOS;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,17 +26,27 @@ namespace f7Race_API.Controllers {
             return Ok(brands);
         }
 
-        [HttpGet("{UserId}/detail")]
-        public async Task<ActionResult<Brand>> GetBrandDetail(int UserId, int brandId){
+        [HttpGet("{brandId}/detail")]
+        public async Task<ActionResult<Brand>> GetBrandDetail(int brandId){
             var brand = await _context.Brands
                 .Where(x => x.BrandId == brandId)
-                .Where(x => x.UserId == UserId)
                 .Include(x => x.Trophies)
+                    .ThenInclude(t => t.Race)
                 .FirstOrDefaultAsync();
 
             if(brand == null){
                 return NotFound();
             }
+
+            brand.TrophiesCount = brand.Trophies
+                .Where(t => t.Race != null) 
+                .GroupBy(t => new { RaceName = t.Race?.Name ?? "Unknown", FlagRace = t.Race?.FlagRace ?? "no flag" })
+                .Select(g => new TrophyCountDto
+                {
+                    RaceName = g.Key.RaceName,
+                    FlagRace = g.Key.FlagRace,
+                    Count = g.Count()
+                }).ToList();
 
             return brand;
         }
@@ -52,6 +63,7 @@ namespace f7Race_API.Controllers {
             await _context.SaveChangesAsync();
             return StatusCode(StatusCodes.Status201Created);
         }
+
 
         [HttpPut("stats")]
         public async Task<IActionResult> Stats(int UserId, string seasonBrandName, bool isWinner){
@@ -122,16 +134,18 @@ namespace f7Race_API.Controllers {
                 Race = race
             };
 
-            _context.Trophies.Add(trophy);
+            brand.Trophies.Add(trophy);
+
             await _context.SaveChangesAsync();
 
             return Ok(brand);
         }
 
         [HttpPut("champion")]
-        public async Task<IActionResult> Champion(string seasonBrandName){
+        public async Task<IActionResult> Champion(int UserId, string seasonBrandName){
             var brand = await _context.Brands
                 .Where(x => x.Name == seasonBrandName)
+                .Where(x => x.UserId == UserId)
                 .FirstOrDefaultAsync();
             
             if(brand == null){

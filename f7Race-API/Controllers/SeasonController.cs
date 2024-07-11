@@ -50,6 +50,8 @@ namespace f7Race_API.Controller {
 
             season.Races = [.. season.Races.OrderBy(r => r.SeasonRaceId)];
 
+            season.Brands = [.. season.Brands.OrderBy(b => b.SeasonBrandId)];
+
             return season;
         }
 
@@ -92,7 +94,7 @@ namespace f7Race_API.Controller {
 
 
         [HttpPut("{id}/podium")]
-        public async Task<IActionResult> AddWinnertoSeason(int id, int winner, int second, int third){
+        public async Task<IActionResult> AddWinnertoSeason(int id,int Userid, string winner, string second, string third){
             
             var season = await _context.Seasons.FindAsync(id);
 
@@ -100,19 +102,40 @@ namespace f7Race_API.Controller {
                 return NotFound();
             }
 
-            var winnerTeam = await _context.Brands.FindAsync(winner);
+            var winnerTeam = await _context.Brands
+                .Where(x => x.Name == winner)
+                .Where(x => x.UserId == Userid)
+                .FirstOrDefaultAsync();
 
-            season.WinnerId = winner;
+            if (winnerTeam == null){
+                return NotFound();
+            }    
+
+            season.WinnerId = winnerTeam.BrandId;
             season.Winner = winnerTeam;
 
-            var secondTeam = await _context.Brands.FindAsync(second);
+            var secondTeam = await _context.Brands
+                .Where(x => x.Name == second)
+                .Where(x => x.UserId == Userid)
+                .FirstOrDefaultAsync();
 
-            season.SecondId = second;
+            if (secondTeam == null){
+                return NotFound();
+            }
+
+            season.SecondId = secondTeam.BrandId;
             season.Second = secondTeam;
 
-            var thirdTeam = await _context.Brands.FindAsync(third);
+            var thirdTeam = await _context.Brands
+                .Where(x => x.Name == third)
+                .Where(x => x.UserId == Userid)
+                .FirstOrDefaultAsync();
 
-            season.ThirdId = third;
+            if (thirdTeam == null){
+                return NotFound();
+            }
+
+            season.ThirdId = thirdTeam.BrandId;
             season.Third = thirdTeam;
 
             await _context.SaveChangesAsync();
