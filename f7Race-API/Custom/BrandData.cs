@@ -113,7 +113,7 @@ namespace f7Race_API.Custom {
                 BrandId=0,
                 Name="Volkswagen",
                 Country="Germany",
-                Logo="https://e7.pngegg.com/pngimages/529/754/png-clipart-volkswagen-vw-logo-transport-cars.png",
+                Logo="https://www.logo-voiture.com/wp-content/uploads/2023/08/Volkswagen_1978-1989_Logo.svg_-1024x1024.png",
                 Flag="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASIAAACuCAMAAAClZfCTAAAAElBMVEUAAAD/zgDdAADnAADaAAD/2AAtsSEoAAAA+ElEQVR4nO3QMQGAMAAEsYeCf8tIuI0pkZANAAAAAAAAAAAAAAAAAAAAgB8dwm6CoqQoKUqKkqKkKClKipKipCgpSoqSoqQoKUqKkqKkKClKipKipCgpSoqSoqQoKUqKkqKkKClKipKipCgpSoqSoqQoKUqKkqKkKClKipKipCgpSoqSoqQoKUqKkqKkKClKewh7CbsIipKipCgpSoqSoqQoKUqKkqKkKClKipKipCgpSoqSoqQoKUqKkqKkKClKipKipCgpSoqSoqQoKUqKkqKkKClKipKipCgpSoqSoqQoKUqKkqKkKClKipKipCgpSoqSoqQoKUofMGTNC8HkSxoAAAAASUVORK5CYII="
             },
             new() {
